@@ -1,0 +1,61 @@
+{
+    "dev1": {
+        "app_function": "app.f",
+        "aws_region": "us-east-1",
+        "exclude": [
+            "boto3",
+            "dateutil",
+            "botocore",
+            "s3transfer",
+            "concurrent"
+        ],
+        "profile_name": "default",
+        "project_name": "Parcial",
+        "runtime": "python3.10",
+        "apigateway_enabled": false,
+        "manage_roles": false,
+        "role_name": "LabRole",
+        "s3_bucket": "parcial3-lambda1",  
+        "events": [
+            {
+                "function": "app.f",
+                "expression": "cron(50 16 * * ? *)"
+            }
+        ]
+    },
+    "dev2": {
+        "app_function": "app.process_data",
+        "aws_region": "us-east-1",
+        "exclude": [
+            "boto3",
+            "dateutil",
+            "botocore",
+            "s3transfer",
+            "concurrent"
+        ],
+        "profile_name": "default",
+        "project_name": "Parcial",
+        "runtime": "python3.10",
+        "apigateway_enabled": false,
+        "manage_roles": false,
+        "role_name": "LabRole",
+        "s3_bucket": "parcial3-lambda2",  
+        "events": [
+            {
+                "function": "app.process_data",
+                "event_source": {
+                    "arn": "arn:aws:s3:::parcial3-lambda1",
+                    "events": [
+                        "s3:ObjectCreated:*"
+                    ],
+                    "key_filters": [
+                        {
+                            "type": "prefix",
+                            "value": "headlines/raw/"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
